@@ -44,20 +44,21 @@ function init(self)
 		local x = 568
 		local y = 640 - (i * height) - (i * spacing)
 		local pos = vmath.vector3(x, y, 0)
-		--local box = spawn_box(self, pos, width, height)
-		local box = spawn_link(self, pos)
+		local link = spawn_link(self, pos)
 		if not prev then
-			marmot.slide_joint(self.space, box.body, self.link_attachment, 0, height / 2, x, 640, 0, spacing)
+			marmot.slide_joint(self.space, link.body, self.link_attachment, 0, height / 2, x, 640, 0, spacing)
 		else
-			marmot.slide_joint(self.space, box.body, prev, 0, height / 2, 0, -height / 2, 0, spacing)
+			marmot.slide_joint(self.space, link.body, prev, 0, height / 2, 0, -height / 2, 0, spacing)
 		end
-		prev = box.body
+		prev = link.body
 	end
 	
 
 	local c1 = marmot.dynamic_circle(self.space, hash("/circle1"), 35, 1, 0.7)
 	local c2 = marmot.dynamic_circle(self.space, hash("/circle2"), 35, 1, 0.7)
-	self.spring = chipmunk.new_damped_spring(c1.body, c2.body, 0, 0, 0, 0, 100, 0.5, 0.1)
+	marmot.damped_spring(self.space, c1.body, c2.body, 0, 0, 0, 0, 150, 0.95, 0.1)
+
+	-- walls and ground
 	marmot.static_segment(self.space, hash("/ground"), 1100, 70, 0.7, 0)
 	marmot.static_segment(self.space, hash("/leftwall"), 640, 70, 0.7, 0)
 	marmot.static_segment(self.space, hash("/rightwall"), 640, 70, 0.7, 0)
