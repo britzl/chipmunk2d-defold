@@ -1,0 +1,77 @@
+local marmot = require "chipmunk.marmot"
+
+local function spawn_circle(self, position)
+	position = position or vmath.vector3(math.random(80, 1000), math.random(300, 600), 0)
+	local id = factory.create("#circlefactory", position)
+	local object = marmot.dynamic_circle(self.space, id, 35, 1, 0.7, 0.7)
+	table.insert(self.objects, object)
+	return object
+end
+
+local function spawn_box(self, position, width, height)
+	position = position or vmath.vector3(math.random(80, 1000), math.random(300, 600), 0)
+	local id = factory.create("#boxfactory", position)
+	local object = marmot.dynamic_box(self.space, id, width or 70, height or 70, 1, 0.8, 0.0)
+	table.insert(self.objects, object)
+	return object
+end
+
+local function spawn_link(self, position)
+	position = position or vmath.vector3(math.random(80, 1000), math.random(300, 600), 0)
+	local id = factory.create("#linkfactory", position)
+	local object = marmot.dynamic_circle(self.space, id, 17, 1, 0.1, 0.0)
+	table.insert(self.objects, object)
+	return object
+end
+
+function init(self)
+	math.randomseed(socket.gettime()) math.random() math.random()
+	msg.post(".", "acquire_input_focus")
+	self.space = chipmunk.new_space(0, -500)
+	self.objects = {}
+
+	for i=1,10 do
+		spawn_circle(self)
+		spawn_box(self)
+	end
+
+	self.link_attachment = chipmunk.new_static_body(self.space)
+	local width = 20
+	local height = 30
+	local spacing = width * 0.1
+	local prev
+	for i=1,10 do
+		local x = 568
+		local y = 640 - (i * height) - (i * spacing)
+		local pos = vmath.vector3(x, y, 0)
+		local link = spawn_link(self, pos)
+		if not prev then
+			marmot.slide_joint(self.space, link.body, self.link_attachment, 0, height / 2, x, 640, 0, spacing)
+		else
+			marmot.slide_joint(self.space, link.body, prev, 0, height / 2, 0, -height / 2, 0, spacing)
+		end
+		prev = link.body
+	end
+	
+
+	local c1 = marmot.dynamic_circle(self.space, hash("/circle1"), 35, 1, 0.7)
+	local c2 = marmot.dynamic_circle(self.space, hash("/circle2"), 35, 1, 0.7)
+	marmot.damped_spring(self.space, c1.body, c2.body, 0, 0, 0, 0, 150, 0.95, 0.1)
+
+	-- walls and ground
+	marmot.static_segment(self.space, hash("/ground"), 1100, 70, 0.7, 0)
+	marmot.static_segment(self.space, hash("/leftwall"), 640, 70, 0.7, 0)
+	marmot.static_segment(self.space, hash("/rightwall"), 640, 70, 0.7, 0)
+end
+
+
+function update(self, dt)
+	marmot.update(self.space, dt)
+end
+
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch") and action.released then
+		spawn_circle(self, vmath.vector3(action.x, action.y, 0))
+	end
+end

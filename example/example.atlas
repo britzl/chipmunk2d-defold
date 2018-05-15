@@ -1,0 +1,15 @@
+images {
+  image: "/example/assets/images/alienPink_round.png"
+}
+images {
+  image: "/example/assets/images/elementMetal013.png"
+}
+images {
+  image: "/example/assets/images/alienBlue_square.png"
+}
+images {
+  image: "/example/assets/images/elementMetal004.png"
+}
+margin: 0
+extrude_borders: 2
+inner_padding: 0
