@@ -124,6 +124,13 @@ function M.slide_joint(space, body1, body2, a1x, a1y, a2x, a2y, min, max)
 end
 
 
+function M.damped_spring(space, body1, body2, a1x, a1y, a2x, a2y, rest_length, stiffness, damping)
+	local constraint = chipmunk.new_damped_spring(body1, body2, a1x, a1y, a2x, a2y, rest_length, stiffness, damping)
+	chipmunk.add_constraint(space, constraint)
+	add_constraint_to_space(space, constraint)
+	return constraint
+end
+
 function M.update(space, dt)
 	chipmunk.space_step(space, dt)
 	local objects = spaces[space].objects
@@ -132,7 +139,7 @@ function M.update(space, dt)
 			object.position.x, object.position.y = chipmunk.get_body_position(object.body)
 			go.set_position(object.position, object.id)
 			object.angle = chipmunk.get_body_rotation(object.body)
-			go.set_rotation(vmath.quat_rotation_z(object.angle))
+			go.set_rotation(vmath.quat_rotation_z(object.angle), object.id)
 		end
 	end
 end
