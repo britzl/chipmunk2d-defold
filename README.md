@@ -10,6 +10,8 @@ https://github.com/britzl/chipmunk2d-defold/archive/master.zip
 
 Or point to the ZIP file of a [specific release](https://github.com/britzl/chipmunk2d-defold/releases).
 
+# Demo
+HTML5 demo of the example project here: https://britzl.github.io/Chipmunk2D/
 
 # Usage
 The extension binds the individual methods of the Chipmunk 2D API. It should be possible to translate most of the official Chipmunk 2D manuals and demos when working with this extension.
