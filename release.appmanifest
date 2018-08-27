@@ -24,12 +24,14 @@ platforms:
             excludeLibs: ["libengine"]
             excludeSymbols: []
             libs: ["libengine_release.lib"]
+            use-clang: true
 
     x86_64-win32:
         context:
             excludeLibs: ["libengine"]
             excludeSymbols: []
             libs: ["libengine_release.lib"]
+            use-clang: true
 
     armv7-android:
         context:
