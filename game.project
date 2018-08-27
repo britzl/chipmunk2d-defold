@@ -15,3 +15,5 @@ height = 640
 [bootstrap]
 main_collection = /example/example.collectionc
 
+[native_extension]
+app_manifest = /release.appmanifest
